@@ -4,7 +4,7 @@ Custom Mouse is an *experiment* in an alternate set of mouse keys with better co
 
 **LIMITATIONS**
 
-1. Some parts of the mouse wheel stuff are not quite right.
+1. The wheel stuff is weird/non-obvious and needs work.
 2. Generally, still a work in progress.
 
 **Rationale**
@@ -25,13 +25,13 @@ Keys not relevant to this note are greyed out. On the left hand, the mouse keys 
 
 On the right hand, the four standard modifiers are on the lower row. These are intended for use in conjunction with the button keys.
 
-On the home row is a set of custom modifier keys. **Acc1** (CM_ACC1), **Acc2** (CM_ACC2) and **Slow** (CM_SLOW) have the effect shown in the table below. There is no auto-repeat on mouse keys. Instead, the **Rept** modifier (CM_REPT) makes the key repeat while it is held.
+On the home row is a set of custom modifier keys. **Acc1** (CM_ACC1), **Acc2** (CM_ACC2) and **Slow** (CM_SLOW) have the effect shown in the table below. There is no auto-repeat on mouse keys. Instead, the **Rept** modifier (CM_REPT) makes the key repeat while it is held. The Wheel (CM_WHEE) key makes the mouse keys send wheel events while it is held.
 
 The key that switches to the Cursor layer is on the right thumb, in red. Other keys that are useful to add to this layer are screenshot and cut/copy/paste keys.
 
-**Effect of Accelerator keys**
+**Effect of Accelerator keys, Wheel not held**
 
-The table below shows the effect of the Slow and accelerator keys.
+The table below shows the effect of the Slow and accelerator keys when **Wheel** is not held.
 
 | Slow | Acc1 | Acc2 | Status  | Pixels |
 | :--: | :--: | :--: | :-----: | :----: |
@@ -44,7 +44,24 @@ The table below shows the effect of the Slow and accelerator keys.
 |  —   |  —   |  ✔   |   +2    |   64   |
 |  —   |  ✔   |  ✔   |   +3    |  127   |
 
+**Effect of Accelerator keys, Wheel is held**
+
+The table below shows the effect of the Slow and accelerator keys when **Wheel** is held. **TBC**
+
+| Slow | Acc1 | Acc2 | Status  | Pixels | Time (ms) |
+| :--: | :--: | :--: | :-----: | :----: | --------- |
+|  ✔   |  ✔   |  ✔   |         |   ?    | TBC       |
+|  ✔   |  —   |  ✔   |         |   ?    |           |
+|  ✔   |  ✔   |  —   |         |   ?    |           |
+|  ✔   |  —   |  —   |         |   ?    |           |
+|  —   |  —   |  —   | (Blank) |   ?    |           |
+|  —   |  ✔   |  —   |   +1    |   ?    |           |
+|  —   |  —   |  ✔   |   +2    |   ?    |           |
+|  —   |  ✔   |  ✔   |   +3    |   ?    |           |
+
 **How to use Custom Mouse**
+
+Note: the following assumes that you have a keymap.h file which is included by keymap.c and contains the definitions of the `layers` and `custom_keycodes` enums.
 
 To include Custom Mouse in your keymap:
 
