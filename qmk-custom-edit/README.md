@@ -104,13 +104,13 @@ To include Custom Edit in your keymap:
 
 7. Finally, add the Custom Edit keycodes into your keymap.
 
-If you want to turn off Custom Edit, simply change the line in rules.mk:
+To turn off Custom Edit, simply change the line in rules.mk:
 
 ```
 CUSTOM_EDIT = no
 ```
 
-The keycodes will revert to the standard keycode equivalents.
+In that case, the keycodes for moving the cursor will #define to the standard keycode equivalents (or Home for Word Left and End for Word Right). The modifier keycodes will #define to KC_NO. This is handy if you need to disable it temporarily to test the normal keycodes, check firmware space usage, and so on, as you don't get compile errors.
 
 **Encoder support**
 

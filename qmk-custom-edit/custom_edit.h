@@ -77,10 +77,10 @@
 #define CE_PG_U KC_PGUP
 #define CE_PG_D KC_PGDN
 
-#define CE_DMOD KC_RSFT
-#define CE_ACC1 KC_RCTL
-#define CE_ACC2 KC_RALT
-#define CE_REPT KC_RGUI
+#define CE_DMOD KC_NO
+#define CE_ACC1 KC_NO
+#define CE_ACC2 KC_NO
+#define CE_REPT KC_NO
 
 #endif
 
