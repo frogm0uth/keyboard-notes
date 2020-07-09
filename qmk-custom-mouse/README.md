@@ -102,13 +102,13 @@ To include Custom Mouse in your keymap:
 
 5. Finally, add the Custom Mouse keycodes into your keymap.
 
-If you want to turn off Custom Mouse, simply change the line in rules.mk:
+To turn off Custom Mouse,  change the line in rules.mk:
 
 ```
 CUSTOM_MOUSE = no
 ```
 
-If you have MOUSEKEY_ENABLE on, the Custom Mouse keycodes will #define to the nearest equivalent. Otherwise, they will #define to KC_TRNS.
+If you have MOUSEKEY_ENABLE on, the Custom Mouse keycodes will #define to the nearest equivalent, except for **Rept** and **Wheel** which have no equivalents. Otherwise, they will #define to KC_TRNS. This is handy if you need to disable it temporarily for testing or to check firmware space usage, as you don't get compile errors.
 
 **Encoder support**
 
