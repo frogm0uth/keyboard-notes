@@ -18,7 +18,7 @@ Therefore, the Custom Edit feature defines a set of platform-independent editing
 
 As an example of how this is used, this is the **Edit** layer of my Kyria firmware:
 
-![kyria-custom-edit-layer-right-handed](/Users/username/Projects/_2020/Keyboard/_kle/kyria-custom-edit-layer-right-handed.png)
+![kyria-custom-edit-layer-right-handed](kyria-custom-edit-layer-right-handed.png)
 
 Keys not relevant to this note are greyed out. On the right hand, the cursor keys are in an inverted-T, with Word Left and Word Right keys (double arrows) and Page Up and Page Down keys arranged nearby.
 
