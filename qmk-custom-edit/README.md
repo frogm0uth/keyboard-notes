@@ -4,13 +4,13 @@ Custom Edit is an *experiment* in a set of platform-independent editing keys.
 
 **LIMITATIONS**
 
-1. Windows shortcuts are not properly defined yet.
+1. Windows shortcuts not fully sorted yet.
 2. If more than one editing key is pressed at a time, it might not work properly.
 3. Generally, still a work in progress.
 
 **Rationale**
 
-While I mostly type on a Mac, I also need to use Windows on a regular basis. Unfortunately, most of the shortcuts related to navigation are different between the two platforms, leading to a lot of fumbles when I switch. For example, to move the cursor one word left on Mac, press Opt (aka Alt) plus left-arrow; on Windows, press Ctrl plus left-arrow.
+While I mostly type on a Mac, I also need to use Windows on a regular basis. Unfortunately, most shortcuts related to navigation are different between the two platforms, leading to a lot of fumbles when I switch. For example, to move the cursor one word left on Mac, press Opt (aka Alt) plus left-arrow; on Windows, press Ctrl plus left-arrow.
 
 Therefore, the Custom Edit feature defines a set of platform-independent editing keys. The keyboard firmware is compiled for either Mac or Windows, and the keys will do the same thing on either platform. (This does mean that each machine needs its own keyboard.)
 
@@ -22,7 +22,7 @@ As an example of how this is used, this is the **Edit** layer of my Kyria firmwa
 
 Keys not relevant to this note are greyed out. On the right hand, the cursor keys are in an inverted-T, with Word Left and Word Right keys (double arrows) and Page Up and Page Down keys arranged nearby.
 
-On the left hand, the four standard modifiers are on the lower row. If any of these other than Shift are pressed, the keys on the right behave the same as normal cursor keys. (In that case, Word Left and Word Right map to Home and End.) This is intended mostly as a backup in case the Custom Edit keys miss something. 
+On the left hand, the four standard modifiers are on the lower row. If any of these other than Shift are pressed, the keys on the right behave the same as normal cursor keys. (In that case, Word Left and Word Right map to Home and End.) This is intended mostly as a backup in case the Custom Edit keys miss something.
 
 On the home row is a set of custom modifier keys. **Acc1** (CE_ACC1) magnifies the effect of the key, and **Acc2** (CE_ACC2) magnifies it even more. See the table below for details. There is no auto-repeat on the editing keys. Instead, the **Rept** modifier (CE_REPT) makes a key repeat while both are held. Finally, the delete modifier **DMod** (CE_DMOD) deletes text instead of moving the cursor.
 
@@ -56,11 +56,13 @@ The key that switches to the Edit layer is on the left thumb, in red. Other keys
 
 **How to use Custom Edit**
 
+Note: the following assumes that you have a keymap.h file which is included by keymap.c and contains the definitions of the `layers` and `custom_keycodes` enums.
+
 To include Custom Edit in your keymap:
 
 1. Drop the files custom_edit.c, custom_edit.h and shortcuts.h into your keymap folder.
 
-2. Include custom_edit.h in your keymap.c (or keymap.h if you have one):
+2. Include custom_edit.h in your keymap.h file:
 
    ```c
    #include "custom_edit.h"
@@ -77,7 +79,14 @@ To include Custom Edit in your keymap:
    endif
    ```
 
-3. Add the following to your `custom_keycode` enum:
+3. Add the following to your config.h file and leave just one line uncommented:
+
+   ```c
+   #define MACOS     // Uncomment to choose macOS shortcuts
+   // #define WINDOWS   // Uncomment to choose Windows shortcuts
+   ```
+   
+5. Add the following to your `custom_keycode` enum:
 
    ```c
    #ifdef CUSTOM_EDIT
@@ -85,7 +94,7 @@ To include Custom Edit in your keymap:
    #endif
    ```
 
-4. Add the following inside the main switch of your process_record_user function:
+6. Add the following inside the main switch of your process_record_user function:
 
    ```c
    #ifdef CUSTOM_EDIT
@@ -93,7 +102,7 @@ To include Custom Edit in your keymap:
    #endif
    ```
 
-5. Finally, add the Custom Edit keycodes into your keymap.
+7. Finally, add the Custom Edit keycodes into your keymap.
 
 If you want to turn off Custom Edit, simply change the line in rules.mk:
 
