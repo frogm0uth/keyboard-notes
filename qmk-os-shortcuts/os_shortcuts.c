@@ -84,7 +84,7 @@ const uint16_t shortcut_codes[][2] = {
 
   // Zooming
   [sc_app_zoom_in]     = { G(KC_EQL),     C(KC_EQL) },
-  [sc_app_zoom_out]    = { A(G(KC_MINS)), C(KC_MINS) },
+  [sc_app_zoom_out]    = { G(KC_MINS),    C(KC_MINS) },
   [sc_app_zoom_reset]  = { G(KC_0),       C(KC_0) },
   
   [sc_scr_zoom_in]     = { A(G(KC_EQL)),  G(KC_EQL) }, // MacOS: needs to be enabled in Accessibility
