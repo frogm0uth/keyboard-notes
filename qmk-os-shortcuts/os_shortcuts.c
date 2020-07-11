@@ -33,34 +33,6 @@ uint8_t os_get_raw() {
   return os_index;
 }
 
-void process_record_os_select(uint16_t keycode, keyrecord_t *record) {
-  if (record->event.pressed) {
-    switch (keycode) {
-    case CU_SELECT_MACOS:
-      os_index = platform_macos;
-      break;
-      
-    case CU_SELECT_WINDOWS:
-      os_index = platform_windows;
-      break;
-    }
-    user_config.os_selection = os_index;
-    eeconfig_update_user(user_config.raw);
-  }
-}
-
-void os_set_from_keycode(uint16_t keycode) {
-  switch (keycode) {
-  case CU_SELECT_MACOS:
-    os_index = platform_macos;
-    break;
-      
-  case CU_SELECT_WINDOWS:
-    os_index = platform_windows;
-    break;
-  }
-}
-
 // The array of shortcut codes. First column for Mac, second column
 // for Windows
 const uint16_t shortcut_codes[][2] = {
@@ -164,7 +136,22 @@ void process_record_shortcut_risky(uint16_t keycode, keyrecord_t *record) {
   }
 }
 
+// Set the OS from a keycode. Call this from process_record_user(). Not persistent.
+//
+void os_set_from_keycode(uint16_t keycode) {
+  switch (keycode) {
+  case CU_SELECT_MACOS:
+    os_index = platform_macos;
+    break;
+      
+  case CU_SELECT_WINDOWS:
+    os_index = platform_windows;
+    break;
+  }
+}
+
 // Display OS on the OLED
+//
 #ifdef OLED_DRIVER_ENABLE
 void os_shortcut_status () {
   switch (os_index) {

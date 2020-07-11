@@ -31,6 +31,13 @@ enum os_shortcut_platform {
   platform_windows
 };
 
+// Macro to access shortcuts
+#define SC(sc_index) (shortcut_codes[sc_index][os_index])
+
+// Variables must be extern for the SC() macro to work
+extern const uint16_t shortcut_codes[][2];
+extern uint8_t os_index;
+
 
 // Implement default processing for custom keycodes for each shortcut. Call
 // this at the end of process_record_user().
@@ -133,11 +140,6 @@ enum shortcut_index {
   
   num_shortcuts // total count
 };
-
-extern const uint16_t shortcut_codes[][2];
-extern uint8_t os_index;
-
-#define SC(sc_index) (shortcut_codes[sc_index][os_index])
 
 
 // Custom keycodes for OS selection
