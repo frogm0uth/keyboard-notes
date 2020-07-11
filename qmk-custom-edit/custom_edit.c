@@ -15,8 +15,10 @@
  */
 #include QMK_KEYBOARD_H
 
-#include "custom_edit.h"
+//#include "shortcuts.h"
+//#include "custom_edit.h"
 #include "keymap.h"
+
 
 /**
  ** Custom editing operations
@@ -38,7 +40,7 @@ void custom_edit_delete(void) {
   switch(edit_keycode) {
   case CE_MV_L:
     if (IS_EDIT_ACC2) {
-      tap_code16(S(SC_SOL)); // Delete to start of line
+      tap_code16(S(SC(sc_start_of_line))); // Delete to start of line
       tap_code(KC_BSPC);
     } else {
       n = IS_EDIT_ACC1 ? 5 : 1;
@@ -50,7 +52,7 @@ void custom_edit_delete(void) {
 	  
   case CE_MV_R:
     if (IS_EDIT_ACC2) {
-      tap_code16(S(SC_EOL)); // Delete to end of line
+      tap_code16(S(SC(sc_end_of_line))); // Delete to end of line
       tap_code(KC_DEL);
     } else {
       n = IS_EDIT_ACC1 ? 5 : 1;
@@ -62,25 +64,25 @@ void custom_edit_delete(void) {
     
   case CE_WD_L:
     if (IS_EDIT_ACC2) {
-      tap_code16(S(SC_SOP)); // Delete to start of paragraph
+      tap_code16(S(SC(sc_start_of_para))); // Delete to start of paragraph
       tap_code(KC_BSPC);
     } else {
       n = IS_EDIT_ACC1 ? 5 : 1;
       for (i=n; i>0; i--) {
-	tap_code16(SC_DEL_WORD_L); // Delete words left
+	tap_code16(SC(sc_del_word_left)); // Delete words left
       }
     }
     break;
 
   case CE_WD_R:
     if (IS_EDIT_ACC2) {
-      tap_code16(S(SC_EOP)); // Delete to end of paragraph
+      tap_code16(S(SC(sc_end_of_para))); // Delete to end of paragraph
       tap_code16(S(KC_LEFT));
       tap_code(KC_DEL);
     } else {
       n = IS_EDIT_ACC1 ? 5 : 1;
       for (i=n; i>0; i--) {
-	tap_code16(SC_DEL_WORD_R); // Delete words right
+	tap_code16(SC(sc_del_word_right)); // Delete words right
       }
     }
     break;
@@ -88,7 +90,7 @@ void custom_edit_delete(void) {
   case CE_MV_U:
   case CE_MV_D:
     n = IS_EDIT_ACC2 ? 12 : (IS_EDIT_ACC1 ? 5 : 1);
-    tap_code16(SC_SOL);     // Delete whole lines up or down
+    tap_code16(SC(sc_start_of_line));     // Delete whole lines up or down
     for (i=n; i>0; i--) {
       tap_code16(edit_keycode==CE_MV_U ? S(KC_UP) : S(KC_DOWN));
       tap_code(KC_BSPC);
@@ -99,7 +101,7 @@ void custom_edit_delete(void) {
 
   case CE_PG_U:
     if (IS_EDIT_ACC2) {
-      tap_code16(S(G(KC_DOWN))); // Delete to start of document
+      tap_code16(S(SC(sc_start_of_doc))); // Delete to start of document
       tap_code(KC_BSPC);
     } else {
       // do nothing (?)
@@ -108,7 +110,7 @@ void custom_edit_delete(void) {
 
   case CE_PG_D:
     if (IS_EDIT_ACC2) {
-      tap_code16(S(G(KC_DOWN))); // Delete to end of document
+      tap_code16(S(SC(sc_end_of_doc))); // Delete to end of document
       tap_code(KC_DEL);
     } else {
       // do nothing (?)
@@ -157,7 +159,7 @@ void custom_edit_move(void) {
     case CE_MV_L:
     case CE_MV_R:
       if (IS_EDIT_ACC2) {
-	tap_code16(edit_keycode == CE_MV_L ? SC_SOL : SC_EOL); // Start or end of line
+	tap_code16(edit_keycode == CE_MV_L ? SC(sc_start_of_line) : SC(sc_end_of_line)); // Start or end of line
       } else {
 	n = IS_EDIT_ACC1 ? 5 : 1;
 	for (i=n; i>0; i--) {
@@ -169,11 +171,11 @@ void custom_edit_move(void) {
     case CE_WD_L:
     case CE_WD_R:
       if (IS_EDIT_ACC2) {
-	tap_code16(edit_keycode == CE_WD_L ? SC_SOP : SC_EOP); // Start or end of paragraph
+	tap_code16(edit_keycode == CE_WD_L ? SC(sc_start_of_para) : SC(sc_end_of_para)); // Start or end of paragraph
       } else {
 	n = IS_EDIT_ACC1 ? 5 : 1;
 	for (i=n; i>0; i--) {
-	  tap_code16(edit_keycode == CE_WD_L ? SC_WORD_L : SC_WORD_R); // Move word left or right
+	  tap_code16(edit_keycode == CE_WD_L ? SC(sc_word_left) : SC(sc_word_right)); // Move word left or right
 	}
       }
       break;
@@ -189,7 +191,7 @@ void custom_edit_move(void) {
     case CE_PG_U:
     case CE_PG_D:
       if (IS_EDIT_ACC2) {
-	tap_code16(edit_keycode == CE_PG_U ? G(KC_UP) : G(KC_DOWN)); // Move to start or end of document NB Doesn't work in Word on macOS
+	tap_code16(edit_keycode == CE_PG_U ? SC(sc_start_of_doc) : SC(sc_end_of_doc)); // Move to start or end of document NB Doesn't work in Word on macOS
       } else {
 	n = IS_EDIT_ACC1 ? 6 : 1;
 	for (i=n; i>0; i--) {
@@ -250,22 +252,22 @@ void custom_edit_encoder(bool clockwise) {
   } else {
     if (!IS_EDIT_DMOD) {
       if (IS_EDIT_ACC1) {
-	keycode = clockwise ? SC_WORD_R : SC_WORD_L;
+	keycode = clockwise ? SC(sc_word_right) : SC(sc_word_left);
       } else if (IS_EDIT_ACC2) {
-	keycode = clockwise ? SC_EOP : SC_SOP;
+	keycode = clockwise ? SC(sc_end_of_para) : SC(sc_start_of_para);
       } else {
 	keycode = clockwise ? KC_RIGHT : KC_LEFT;
       }
     } else { // Delete modifier active
       if (IS_EDIT_ACC1) {
-	keycode = clockwise ? SC_DEL_WORD_R : SC_DEL_WORD_L;
+	keycode = clockwise ? SC(sc_del_word_right) : SC(sc_del_word_right);
       } else if (IS_EDIT_ACC2) {
 	if (clockwise) {
-	  tap_code16(S(SC_EOP)); // Delete to end of paragraph
+	  tap_code16(S(SC(sc_end_of_para))); // Delete to end of paragraph
 	  tap_code16(S(KC_LEFT));
 	  tap_code(KC_DEL);
 	} else {
-	  tap_code16(S(SC_SOP)); // Delete to start of paragraph
+	  tap_code16(S(SC(sc_start_of_para))); // Delete to start of paragraph
 	  tap_code(KC_BSPC);
 	}
       } else {

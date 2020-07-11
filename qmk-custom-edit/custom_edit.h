@@ -16,7 +16,7 @@
 #pragma once
 
 #include QMK_KEYBOARD_H
-#include "shortcuts.h"
+#include "os_shortcuts.h"
 
 
 #ifdef CUSTOM_EDIT
@@ -46,6 +46,7 @@
   CE_ACC2, \
   CE_DMOD
 
+
 #define CUSTOM_EDIT_PROCESS_RECORD(kc,rec)	\
   case CE_MV_L:					\
   case CE_MV_R:					\
@@ -64,6 +65,7 @@
   case CE_ACC2:					\
     custom_edit_mod(kc, rec);			\
     break
+
 
 #else
 #define CE_MV_L KC_LEFT

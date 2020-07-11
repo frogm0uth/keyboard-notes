@@ -58,6 +58,8 @@ The key that switches to the Edit layer is on the left thumb, in red. Other keys
 
 Note: the following assumes that you have a keymap.h file which is included by keymap.c and contains the definitions of the `layers` and `custom_keycodes` enums.
 
+Note 2: Custom Edit requires [OS Shortcuts](../qmk_os_shortcuts).
+
 To include Custom Edit in your keymap:
 
 1. Drop the files custom_edit.c, custom_edit.h and shortcuts.h into your keymap folder.
@@ -75,17 +77,11 @@ To include Custom Edit in your keymap:
    ...
    ifeq ($(strip $(CUSTOM_EDIT)), yes)
    	SRC += custom_edit.c
-   	OPT_DEFS += -DCUSTOM_EDIT
+   	SRC += os_shortcuts.c
+   	OPT_DEFS += -DCUSTOM_EDIT -DOS_SHORTCUTS
    endif
    ```
 
-3. Add the following to your config.h file and leave just one line uncommented:
-
-   ```c
-   #define MACOS     // Uncomment to choose macOS shortcuts
-   // #define WINDOWS   // Uncomment to choose Windows shortcuts
-   ```
-   
 5. Add the following to your `custom_keycode` enum:
 
    ```c
@@ -148,4 +144,8 @@ switch (get_highest_layer(layer_state)) {
 }
 oled_write_P(PSTR("\n"), false);
 ```
+
+**Firmware size**
+
+In my Kyria keymap, Custom Edit adds about 1350 bytes to the size. That includes the OLED and encoder support functions. About 200 bytes is due to the use of OS Shortcuts (dynamically rather than statically defined shortcuts).
 
