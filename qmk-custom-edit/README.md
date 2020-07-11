@@ -12,7 +12,7 @@ Custom Edit is an *experiment* in a set of platform-independent editing keys.
 
 While I mostly type on a Mac, I also need to use Windows on a regular basis. Unfortunately, most shortcuts related to navigation are different between the two platforms, leading to a lot of fumbles when I switch. For example, to move the cursor one word left on Mac, press Opt (aka Alt) plus left-arrow; on Windows, press Ctrl plus left-arrow.
 
-Therefore, the Custom Edit feature defines a set of platform-independent editing keys. The keyboard firmware is compiled for either Mac or Windows, and the keys will do the same thing on either platform. (This does mean that each machine needs its own keyboard.)
+Therefore, the Custom Edit feature defines a set of platform-independent editing keys. It relies on [OS Shortcuts](../qmk-os-shortcuts/) for the shortcuts it needs for each platform.
 
 **Typical layout**
 
