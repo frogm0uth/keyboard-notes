@@ -86,7 +86,7 @@ and:
   unregister_code16(SC(sc_del_word_left)); // Stop auto-repeat on word delete
 ```
 
-To switch OS, use the custom keycodes CU_MACOS and CU_WINDOWS. These will write to persistent storage (EEPROM). If you are already using the user area in the EEPROM, you will need to create the field for the OS selection, see the comments in os_shortcuts.h for info. 
+To switch OS, use the custom keycodes CU_SELECT_MACOS and CU_SELECT_WINDOWS. See below for more details. 
 
 **How to change the OS selection**
 
@@ -120,7 +120,7 @@ To create keycodes to switch the OS selection.
 
 **How to make OS selection persistent**
 
-To make the OS selection persistent, you will need to have a 32-bit structure and variable defined as described in the [QMK docs](https://docs.qmk.fm/#/custom_quantum_functions?id=persistent-configuration-eeprom). If you already have this, add a 2-bit field to it for the OS selection as shown below. If you don't, add the following to your keymap.c:
+To make the OS selection persistent, you will need to have a 32-bit structure and variable, as described in the [QMK docs](https://docs.qmk.fm/#/custom_quantum_functions?id=persistent-configuration-eeprom). If you already have this, add a 2-bit field to it for the OS selection as shown below. If you don't, add the following to your keymap.c:
 
 ```c
 typedef union {
@@ -133,7 +133,7 @@ typedef union {
 user_config_t user_config;
 ```
 
-Also in keymap.c, add the initialization function that reads the EEPROM and set the OS:
+Also in keymap.c, add the initialization function that reads the EEPROM and sets the OS:
 
 ```c
 void keyboard_post_init_user(void) {
