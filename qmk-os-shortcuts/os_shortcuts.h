@@ -39,26 +39,6 @@ extern const uint16_t shortcut_codes[][2];
 extern uint8_t os_index;
 
 
-// Implement default processing for custom keycodes for each shortcut. Call
-// this at the end of process_record_user().
-//
-// The function name ends in "risky" because it's easy to introduce a
-// bug here if changes are made in shortcut.h, in which codes will be
-// wrong or even attempt to read from invalid memory location.
-//
-void process_record_shortcut_risky(uint16_t keycode, keyrecord_t *record);
-
-// Record  OS selection
-void process_record_os_select(uint16_t keycode, keyrecord_t *record);
-void os_set_from_keycode(uint16_t keycode);
-
-// Set/get the OS, no EEPROM involved
-void os_set_raw(uint8_t os);
-uint8_t os_get_raw(void);
-		     
-// Display OS on the OLED
-void os_shortcut_status(void);
-
 // All shortcuts. If you add to or change this, make SURE that you
 // update OS_SHORTCUT_KEYCODES below and the shortcut_codes array in
 // os_shortcuts.c
@@ -140,6 +120,26 @@ enum shortcut_index {
   
   num_shortcuts // total count
 };
+
+
+// Implement default processing for custom keycodes for each shortcut. Call
+// this at the end of process_record_user().
+//
+// The function name ends in "risky" because it's easy to introduce a
+// bug here if changes are made in shortcut.h, in which codes will be
+// wrong or even attempt to read from invalid memory location.
+//
+void process_record_shortcut_risky(uint16_t keycode, keyrecord_t *record);
+
+// Change OS selection, not written to EEPROM
+void os_set_from_keycode(uint16_t keycode);
+
+// Set/get the OS, no EEPROM involved
+void os_set_raw(uint8_t os);
+uint8_t os_get_raw(void);
+		     
+// Display OS on the OLED
+void os_shortcut_status(void);
 
 
 // Custom keycodes for OS selection
