@@ -1,20 +1,38 @@
 # Custom Edit - QMK notes
 
 Custom Edit is an *experiment* in a set of platform-independent editing keys.
+<!--ts-->
+   * [Custom Edit - QMK notes](#custom-edit---qmk-notes)
+      * [LIMITATIONS](#limitations)
+      * [Rationale](#rationale)
+   * [Description](#description)
+      * [Typical layout](#typical-layout)
+      * [Effect of Custom Edit keys, DMod not held](#effect-of-custom-edit-keys-dmod-not-held)
+      * [Effect of Custom Edit keys, DMod held](#effect-of-custom-edit-keys-dmod-held)
+   * [Usage](#usage)
+      * [How to add to your keymap](#how-to-add-to-your-keymap)
+      * [To turn off Custom Edit](#to-turn-off-custom-edit)
+      * [Encoder support](#encoder-support)
+      * [OLED support](#oled-support)
+   * [Firmware size](#firmware-size)
 
-**LIMITATIONS**
+<!--te-->
+
+## LIMITATIONS
 
 1. Windows shortcuts not fully sorted yet.
 2. If more than one editing key is pressed at a time, it might not work properly.
 3. Generally, still a work in progress.
 
-**Rationale**
+## Rationale
 
 While I mostly type on a Mac, I also need to use Windows on a regular basis. Unfortunately, most shortcuts related to navigation are different between the two platforms, leading to a lot of fumbles when I switch. For example, to move the cursor one word left on Mac, press Opt (aka Alt) plus left-arrow; on Windows, press Ctrl plus left-arrow.
 
-Therefore, the Custom Edit feature defines a set of platform-independent editing keys. It relies on [OS Shortcuts](../qmk-os-shortcuts/) for the shortcuts it needs for each platform.
+Therefore, the Custom Edit feature defines a set of platform-independent editing keys. It relies on [OS Shortcuts](../../../tree/master/qmk-os-shortcuts/) for the correct shortcuts for each platform.
 
-**Typical layout**
+# Description
+
+## Typical layout
 
 As an example of how this is used, this is the **Edit** layer of my Kyria firmware:
 
@@ -28,7 +46,7 @@ On the home row is a set of custom modifier keys. **Acc1** (CE_ACC1) magnifies t
 
 The key that switches to the Edit layer is on the left thumb, in red. Other keys that are useful to add to this layer are dedicated cut/copy/paste keys, undo/redo keys, and keys for switching windows and tabs.
 
-**Effect of Custom Edit keys, DMod not held**
+## Effect of Custom Edit keys, DMod not held
 
 | Key     | No Modifier                     | Acc1 (CE_ACC1)                 | Acc2 (CE_ACC2)                    |
 | ------- | ------------------------------- | ------------------------------ | --------------------------------- |
@@ -41,7 +59,7 @@ The key that switches to the Edit layer is on the left thumb, in red. Other keys
 | CE_PG_U | Scroll one screen up            | Scroll six screens up          | Move to start of document         |
 | CE_PG_D | Scroll one screen down          | Scroll six screens down        | Move to start of document         |
 
-**Effect of Custom Edit keys, DMod held**
+## Effect of Custom Edit keys, DMod held
 
 | Key     | DMod (CE_DMOD) held                                  | +Acc1 (CE_ACC1)                     | +Acc2 (CE_ACC2)              |
 | ------- | ---------------------------------------------------- | ----------------------------------- | ---------------------------- |
@@ -54,15 +72,17 @@ The key that switches to the Edit layer is on the left thumb, in red. Other keys
 | CE_PG_U | Do nothing                                           | Do nothing                          | Delete to start of document  |
 | CE_PG_D | Do nothing                                           | Do nothing                          | Delete to start of document  |
 
-**How to use Custom Edit**
+# Usage
 
-Note: the following assumes that you have a keymap.h file which is included by keymap.c and contains the definitions of the `layers` and `custom_keycodes` enums.
+## How to add to your keymap
 
-Note 2: Custom Edit requires [OS Shortcuts](../qmk_os_shortcuts).
+Note: the following assumes that you have a keymap.h file which is included by keymap.c and contains the definitions of the `layers` and `custom_keycodes` enums. The code can be obtained from my [Kyria keymap](../../../../keyboard-firmware/tree/master/kyria-rsthd-prime).
+
+Note 2: Custom Edit requires [OS Shortcuts](../../../tree/master/qmk-os-shortcuts/).
 
 To include Custom Edit in your keymap:
 
-1. Drop the files custom_edit.c, custom_edit.h and shortcuts.h into your keymap folder.
+1. Drop the files custom_edit.c and custom_edit.h into your keymap folder.
 
 2. Include custom_edit.h in your keymap.h file:
 
@@ -100,6 +120,8 @@ To include Custom Edit in your keymap:
 
 7. Finally, add the Custom Edit keycodes into your keymap.
 
+## To turn off Custom Edit
+
 To turn off Custom Edit, simply change the line in rules.mk:
 
 ```
@@ -108,7 +130,7 @@ CUSTOM_EDIT = no
 
 In that case, the keycodes for moving the cursor will #define to the standard keycode equivalents (or Home for Word Left and End for Word Right). The modifier keycodes will #define to KC_NO. This is handy if you need to disable it temporarily to test the normal keycodes, check firmware space usage, and so on, as you don't get compile errors.
 
-**Encoder support**
+## Encoder support
 
 If you have encoders, add the following to your `encoder_update_user` function:
 
@@ -129,7 +151,7 @@ If **DMod** is held, the operations are the same but delete text instead of movi
 
 If **Rept** is held, the orientation changes to vertical and the operations are the same as listed for key presses earlier on this page. 
 
-**OLED support**
+## OLED support
 
 If you have an OLED, add something like the following to your `oled_task_user` function: 
 
@@ -145,7 +167,7 @@ switch (get_highest_layer(layer_state)) {
 oled_write_P(PSTR("\n"), false);
 ```
 
-**Firmware size**
+# Firmware size
 
 In my Kyria keymap, Custom Edit adds about 1350 bytes to the size. That includes the OLED and encoder support functions. About 200 bytes is due to the use of OS Shortcuts (dynamically rather than statically defined shortcuts).
 
