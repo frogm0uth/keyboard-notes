@@ -1,13 +1,29 @@
 # Custom Mouse - QMK notes
 
 Custom Mouse is an *experiment* in an alternate set of mouse keys with better control.
+<!--ts-->
+   * [Custom Mouse - QMK notes](#custom-mouse---qmk-notes)
+      * [LIMITATIONS](#limitations)
+      * [Rationale](#rationale)
+   * [Description](#description)
+      * [Typical layout](#typical-layout)
+      * [Effect of Accelerator keys, Wheel not held](#effect-of-accelerator-keys-wheel-not-held)
+      * [Effect of Accelerator keys, Wheel is held](#effect-of-accelerator-keys-wheel-is-held)
+   * [How to use](#how-to-use)
+      * [How to include Custom Mouse in your keymap](#how-to-include-custom-mouse-in-your-keymap)
+      * [To turn off Custom Mouse](#to-turn-off-custom-mouse)
+      * [Encoder support](#encoder-support)
+      * [OLED support](#oled-support)
+   * [Firmware size](#firmware-size)
 
-**LIMITATIONS**
+<!--te-->
+
+## LIMITATIONS
 
 1. The wheel stuff is weird/non-obvious and needs work.
 2. Generally, still a work in progress.
 
-**Rationale**
+## Rationale
 
 While the inbuilt QMK mouse keys are useful, I found it a bit hard to control and tended to overshoot. It's also not possible to make very small cursor movements, which is a good use case for mouse keys versus a mouse. And the buttons can't be held down, they are click (tap) only.
 
@@ -15,7 +31,9 @@ Therefore, the Custom Mouse feature changes the way that accelerator keys work w
 
 Finally, a dedicated modifier key changes from mouse movement to wheel scrolling.
 
-**Typical layout**
+# Description
+
+## Typical layout
 
 As an example of how this is used, this is the **Cursor** layer of my Kyria firmware:
 
@@ -29,7 +47,7 @@ On the home row is a set of custom modifier keys. **Acc1** (CM_ACC1), **Acc2** (
 
 The key that switches to the Cursor layer is on the right thumb, in red. Other keys that are useful to add to this layer are screenshot and cut/copy/paste keys.
 
-**Effect of Accelerator keys, Wheel not held**
+## Effect of Accelerator keys, Wheel not held
 
 The table below shows the effect of the Slow and accelerator keys when **Wheel** is not held.
 
@@ -44,7 +62,7 @@ The table below shows the effect of the Slow and accelerator keys when **Wheel**
 |  —   |  —   |  ✔   |   +2    |   64   |
 |  —   |  ✔   |  ✔   |   +3    |  127   |
 
-**Effect of Accelerator keys, Wheel is held**
+## Effect of Accelerator keys, Wheel is held
 
 The table below shows the effect of the Slow and accelerator keys when **Wheel** is held. **TBC**
 
@@ -59,9 +77,11 @@ The table below shows the effect of the Slow and accelerator keys when **Wheel**
 |  —   |  —   |  ✔   |   +2    |   ?    |           |
 |  —   |  ✔   |  ✔   |   +3    |   ?    |           |
 
-**How to use Custom Mouse**
+# How to use
 
-Note: the following assumes that you have a keymap.h file which is included by keymap.c and contains the definitions of the `layers` and `custom_keycodes` enums.
+## How to include Custom Mouse in your keymap
+
+Note: the following assumes that you have a keymap.h file which is included by keymap.c and contains the definitions of the `layers` and `custom_keycodes` enums. The code can be obtained from my [Kyria keymap](../../../../keyboard-firmware/tree/master/kyria-rsthd-prime).
 
 To include Custom Mouse in your keymap:
 
@@ -102,6 +122,8 @@ To include Custom Mouse in your keymap:
 
 5. Finally, add the Custom Mouse keycodes into your keymap.
 
+## To turn off Custom Mouse
+
 To turn off Custom Mouse,  change the line in rules.mk:
 
 ```
@@ -110,7 +132,7 @@ CUSTOM_MOUSE = no
 
 If you have MOUSEKEY_ENABLE on, the Custom Mouse keycodes will #define to the nearest equivalent, except for **Rept** and **Wheel** which have no equivalents. Otherwise, they will #define to KC_TRNS. This is handy if you need to disable it temporarily for testing or to check firmware space usage, as you don't get compile errors.
 
-**Encoder support**
+## Encoder support
 
 If you have encoders, add the following into your `encoder_update_user` function:
 
@@ -132,7 +154,7 @@ A second function allows use of the wheel on a different layer, like this:
 
 With the second argument true, this moves the wheel down and up, which is a good default if intended for scrolling through a page. If the second argument is false, the wheel moves left and right.
 
-**OLED support**
+## OLED support
 
 If you have an OLED, add something like the following to your `oled_task_user` function: 
 
@@ -147,4 +169,8 @@ switch (get_highest_layer(layer_state)) {
 }
 oled_write_P(PSTR("\n"), false);
 ```
+
+# Firmware size
+
+In my Kyria keymap, Custom Mouse adds about 1850 bytes to the size. That includes the OLED and encoder support functions. In comparison, the standard QMK mouse key functionality adds about 1500 bytes.
 
