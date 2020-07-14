@@ -1,25 +1,43 @@
 # OS Shortcuts - QMK notes
 
 OS Shortcuts is a utility to ease implementing platform-dependent shortcuts in a keymap. It provides a set of shortcuts specific to each supported platform (currently, macOS and Windows).
+<!--ts-->
+   * [OS Shortcuts - QMK notes](#os-shortcuts---qmk-notes)
+      * [Rationale](#rationale)
+      * [LIMITATIONS](#limitations)
+   * [Usage](#usage)
+      * [How to add OS Shortcuts to your keymap](#how-to-add-os-shortcuts-to-your-keymap)
+         * [For static shortcuts](#for-static-shortcuts)
+         * [For dynamic/runtime shortcuts](#for-dynamicruntime-shortcuts)
+      * [How to add shortcuts to custom code](#how-to-add-shortcuts-to-custom-code)
+      * [How to change the OS selection](#how-to-change-the-os-selection)
+      * [How to make OS selection persistent](#how-to-make-os-selection-persistent)
+      * [OLED Support](#oled-support)
+   * [Firmware size](#firmware-size)
 
-**Rationale**
+<!--te-->
+## Rationale
 
 While I mostly type on a Mac, I also need to use Windows on a regular basis. Unfortunately, many shortcuts are different between the two platforms, leading to a lot of fumbles when I switch.
 
-Therefore, the OS Shortcuts code here provides all the shortcuts I can find that have a reasonable equivalence between the platforms. They can be added to the keymap as- is or used in more complex custom keycodes/macros.
+Therefore, the OS Shortcuts code here provides a useful set of shortcuts to make it easier to switch between platforms. Most of them are related to navigation (modifier+arrow) and window navigation. They can be added to the keymap as-is or used in more complex custom keycodes/macros.
 
-**LIMITATIONS**
+There are two ways of using OS Shortcuts: static, where the actual shortcut codes are compiled in, or dynamic, where you can select the platform you want with a key on the keyboard.
+
+## LIMITATIONS
 
 1. Windows functionality largely untested.
 2. No codes for Linux. This is to be added later.
 
-**How to use add OS Shortcuts to your keymap**
+# Usage
 
-Note: the following assumes that you have a keymap.h file which is included by keymap.c and contains the definitions of the `custom_keycodes` enum.
+## How to add OS Shortcuts to your keymap
+
+Note: the following assumes that you have a keymap.h file which is included by keymap.c and contains the definition of the `custom_keycodes` enum. The code can be obtained from my [Kyria keymap](../../../../keyboard-firmware/tree/master/kyria-rsthd-prime).
 
 To add OS Shortcuts to your keymap:
 
-1. Drop the files os_shortcuts.c and os_shortcuts.h into your keymap folder.
+1. Drop the files os_shortcuts.c, os_shortcuts.h and os_shortcuts_static.h into your keymap folder.
 
 2. Include os_shortcuts.h in your keymap.h:
 
@@ -38,67 +56,106 @@ To add OS Shortcuts to your keymap:
    endif
    ```
    
-5. **If** you want to define a custom keycode for every single shortcut, add the following to your `custom_keycode` enum. Because this defines a lot of custom keycodes which you may not use, it's probably best put at the end of the enum:
+### For static shortcuts
+
+If you want to have the shortcuts statically compiled for one platform:
+
+4. Add this line to your config.h:
 
    ```c
-   #ifdef OS_SHORTCUTS
+   #define OS_SHORTCUTS_STATIC
+   ```
+   
+5. Add one of the following to config.h:
+
+   ```
+   #define OS_MACOS
+   ```
+
+   or:
+
+   ```
+   #define OS_WINDOWS
+   ```
+
+### For dynamic/runtime shortcuts
+
+If you want to be able to change the OS selection dynamically i.e. at runtime:
+
+6. Add the following to your `custom_keycode` enum:
+
+   ```c
+   #if defined OS_SHORTCUTS && !defined(OS_SHORTCUTS_STATIC)
+     OS_SELECT_KEYCODES,
      OS_SHORTCUT_KEYCODES,
    #endif
    ```
-   
-   Otherwise, you can just add individual keycodes to `custom_keycode`.
-   
-5. **If** you created all shortcut keycodes as above, add them to the keymap. The predefined names all start with "CU_" and you can see the full list in shortcodes.h. Because the names are fairly long, you might want to #define shorter versions in keymap.h e.g.:
+
+5. Optionally, create short names for the shortcut codes that you want to put in your keymap. For example:
 
    ```c
-   #define CU_ALL CU_SELECT_ALL
+   #define SC_ALL SC_SELECT_ALL
    ```
 
-6. **If** you created all shortcut keycodes above, you can have them all send the shortcut in response to each custom keycode. To do this, add the following code to the END of the main switch in process_record_user():
+6. Add the shortcut codes, or your #defined equivalents, to the keymap.
+
+8. Add the following **after** the main switch in process_record_user():
 
    ```c
        // Default processing for OS shortcuts
-       process_record_shortcut_risky(keycode, record);
+   #if defined OS_SHORTCUTS && !defined(OS_SHORTCUTS_STATIC)
+     process_record_shortcut(keycode, record);
+   #endif
    ```
 
-   The name of this function includes "risky" because it's very easy to get the wrong keycodes if changes are made in shortcuts.h. **Use at your own risk.**
+   Now each shortcut key in your keymap will automatically emit the correct shortcut for the currently selected platform.
 
-   If you are not using many shortcuts directly from the keymap, you may prefer to manually define the handling of each of them in process_record_user().
+9. For anything that requires a sequence of shortcuts, define more custom keycodes in `custom_keycode` and handle them in process_record_user().
 
-   You may be tempted to "override" a shortcut keycode. For example, suppose you wanted to have CU_SELECT_ALL move the cursor before selecting all, so added a case for CU_SELECT_ALL to process_record_user(). If you do that, you have to return false immediately, otherwise the keycode will be processed again in process_record_shortcut_risky(). It would be better to define a different keycode e.g. CU_MY_SEL. **Either**:
+## How to add shortcuts to custom code
 
-   1. Do not call process_record_shortcut_risky(), and define handling for each shortcut keycode manually, **or**
-   2. Call  process_record_shortcut_risky() and use different keycodes for anything you need handled differently than the default. 
-
-**How to use OS Shortcuts**
-
-Once you have added OS Shortcuts to your keymap, use the macro SC() to access them. The argument to SC must be an element of shortcuts_index, defined in shortcuts.h. For example:
+Use the macro SC() to access shortcuts. The argument to SC must be listed in the OS_SHORTCUT_KEYCODES macro in shortcuts.h. For example, the following work for both static and dynamic shortcuts:
 
 ```c
-  tap_code16(SC(sc_start_of_doc)); // Move to start of document
+  tap_code16(SC(SC_START_OF_DOC)); // Move to start of document
 ```
 
 and:
 
 ```c
-  register_code16(SC(sc_del_word_left));   // Delete word left, auto-repeat while held
+  register_code16(SC(SC_START_OF_DOC));   // Delete word left, auto-repeat while held
   ...
-  unregister_code16(SC(sc_del_word_left)); // Stop auto-repeat on word delete
+  unregister_code16(SC(SC_START_OF_DOC)); // Stop auto-repeat on word delete
 ```
 
-To switch OS, use the custom keycodes CU_SELECT_MACOS and CU_SELECT_WINDOWS. See below for more details. 
+Note that the argument to SC **must** be a constant defined in shortcuts.h. You can not use a variable as its argument. So this (for example) doesn't work:
 
-**How to change the OS selection**
+```c
+switch (keycode) {
+  case SC_START_OF_DOC:
+    tap_code16(SC(keycode);
+    break;
+```
 
-To create keycodes to switch the OS selection.
+## A note on static shortcuts
 
-1. Add this to your `custom_keycode` enum:
+If you followed the instructions above for static shortcuts, the keycodes `SC_...` will not be in your keymap. This is because there is no way with static shortcuts to automatically handle those keycodes. I'm assuming in that case you will define the  keycodes manually, as you have to manually write the case for each of them in process_record_user() anyway.
 
-   ```c
-   #ifdef OS_SHORTCUTS
-     OS_SELECT_KEYCODES,
+If you do want all the keycodes defined, then just add this to  your `custom_keycode` enum:
+
+```c
+   #if defined OS_SHORTCUTS && !defined(OS_SHORTCUTS_STATIC)
+     OS_SHORTCUT_KEYCODES,
    #endif
-   ```
+```
+
+Then add the keycodes to your keymap and add the cases to process_record_user().
+
+## How to change the OS selection
+
+You can change the OS selection if you are using dynamic shortcuts:
+
+1. Add OS_SELECT_KEYCODES to your `custom_keycode` enum as described earlier.
 
 2. Add the keycodes CU_SELECT_MACOS and CU_SELECT_WINDOWS to your keymap. You may want to #define shorter versions:
 
@@ -107,18 +164,20 @@ To create keycodes to switch the OS selection.
    #define CU_WIN    CU_SELECT_WINDOWS
    ```
 
-3. Add to process_record_user():
+3. Add code to handle them in process_record_user():
 
    ```
+   #if defined OS_SHORTCUTS && !defined(OS_SHORTCUTS_STATIC)
      case CU_SELECT_MACOS:
      case CU_SELECT_WINDOWS:
        if (record->event.pressed) {
          os_set_from_keycode(keycode);
        }
        break;
+   #endif
    ```
 
-**How to make OS selection persistent**
+## How to make OS selection persistent
 
 To make the OS selection persistent, you will need to have a 32-bit structure and variable, as described in the [QMK docs](https://docs.qmk.fm/#/custom_quantum_functions?id=persistent-configuration-eeprom). If you already have this, add a 2-bit field to it for the OS selection as shown below. If you don't, add the following to your keymap.c:
 
@@ -141,15 +200,18 @@ void keyboard_post_init_user(void) {
   user_config.raw = eeconfig_read_user();
 
   // Set OS
+#if defined OS_SHORTCUTS && !defined(OS_SHORTCUTS_STATIC)
   os_set_raw(user_config.os_selection);
+#endif
 }
 ```
 
 (If you already have this function, add the last line shown above.)
 
-Also change the code in process_record_user() to update the EEPROM on a keypress:
+Change the code in process_record_user() to update the EEPROM when the OS selection is changed:
 
 ```c
+#if defined OS_SHORTCUTS && !defined(OS_SHORTCUTS_STATIC)
   case CU_SELECT_MACOS:
   case CU_SELECT_WINDOWS:
     if (record->event.pressed) {
@@ -158,9 +220,10 @@ Also change the code in process_record_user() to update the EEPROM on a keypress
       eeconfig_update_user(user_config.raw);
     }
     break;
+#endif
 ```
 
-**OLED Support**
+## OLED Support
 
 If you have an OLED, the OS selection can be displayed by adding something like this to your `oled_task_user` function: 
 
@@ -174,7 +237,7 @@ If you have an OLED, the OS selection can be displayed by adding something like 
 oled_write_P(PSTR("\n"), false);
 ```
 
-**Firmware size**
+# Firmware size
 
-In my Kyria keymap, OS Shortcuts adds about 650 bytes to the size. Using the shortcuts does add some additional size compared to using hardwired codes, so the actual size difference will vary. For example, with extensive use of shortcuts through my keymap, the difference is about 1k.
+In static mode, OS Shortcuts will add very little size. With dynamic shortcuts enabled, OS Shortcuts adds about 800 bytes to the size of my base Kyria firmware. Using shortcuts does add some additional size compared to using hardwired codes, so the actual size difference will vary. For example, with extensive use of shortcuts throughout my keymap, the difference is about 1 kbytes.
 
