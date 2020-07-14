@@ -1,18 +1,41 @@
 # Layer-tap-toggle - QMK notes
 
 Layer-tap-toggle is my way of getting a uniform layer switching method on my QMK keyboards.
+<!--ts-->
+   * [Layer-tap-toggle - QMK notes](#layer-tap-toggle---qmk-notes)
+      * [Rationale](#rationale)
+   * [Usage](#usage)
+      * [How it works](#how-it-works)
+      * [How to add to your keymap](#how-to-add-to-your-keymap)
+      * [Removing](#removing)
+   * [Firmware size](#firmware-size)
 
-**Rationale**
+<!--te-->
+
+## Rationale
 
 QMK provides a range of keycodes for layer switching - MO, TG, TT, LT, and OSL. However, I found that I ended up with a mish-mash using more than one of these, which then confused me. I felt that what I really wanted was a single hybrid of LT and TG.
 
-Therefore, the layer-tap-toggle code here firstly allows you to hold to activate a layer or tap to get a keycode - it is like LT except that the layer activates immediately with no lag. In addition, you can toggle the layer on by holding Shift when activating it, or lock it later with a dedicated "lock" key.
+Therefore, the layer-tap-toggle code here firstly allows you to hold to activate a layer or tap to get a keycode – it is like LT except that the layer activates immediately with no lag. In addition, you can toggle the layer on by holding Shift when activating it, or lock it later with a dedicated "lock" key.
 
 As a side-benefit, the tap keycode can be any keycode, it's not limited to just basic keycodes.
 
-**How to use layer-tap-toggle**
+# Usage
 
-Note: the following assumes that you have a keymap.h file which is included by keymap.c and has the definitions of the `layers` and `custom_keycodes` enums. If not, consider creating one. Otherwise, you may have to adapt in some other way (e.g. a brute force method would be to just copy the contents of layer_tap_toggle.c into keymap.c).
+## How it works
+
+Once you have everything set up:
+
+1. Tap the key to produce the tap keycode. In the example above, tapping the NumPad layer key produces Enter.
+2. Hold the layer key and the layer will be activated while it's held.
+3. Hold Shift, then tap the layer key to toggle/lock the layer.
+4. Hold the layer key, then while holding, tap the CU_LLOCK key to lock the layer on. Then you can release the layer key.
+5. If the layer is toggled/locked, press the layer key to deactivate it.
+6. Press the CU_BASE key to deactivate all layers.
+
+## How to add to your keymap
+
+Note: the following assumes that you have a keymap.h file which is included by keymap.c and contains the definitions of the `layers` and `custom_keycodes` enums. The code can be obtained from my [Kyria keymap](../../../../keyboard-firmware/tree/master/kyria-rsthd-prime).
 
 To add layer-tap-toggle to your keymap:
 
@@ -94,7 +117,7 @@ To add layer-tap-toggle to your keymap:
    #endif
    ```
 
-
+## Removing
 
 If you decide you don't want to use layer-tap-toggle any more, simply change the line in rules.mk:
 
@@ -102,18 +125,9 @@ If you decide you don't want to use layer-tap-toggle any more, simply change the
 LAYER_TAP_TOGGLE = no
 ```
 
-You will also need to remove the keycodes from your keymap i.e. change them to normal QMK layer switching codes. Alternatively, in your keymap.h, define macros to substitute for the CU_..... keycodes (see my Kyria RSTHD' keymap for an example).
+You will also need to remove the keycodes from your keymap i.e. change them to normal QMK layer switching codes. Alternatively, in your keymap.h, define macros to substitute for the CU_..... keycodes (see my Kyria keymap for an example).
 
+# Firmware size
 
-
-**Summary**
-
-Once you have everything set up:
-
-1. Tap the key to produce the tap keycode. In the example above, tapping the NumPad layer key produces Enter.
-2. Hold the layer key and the layer will be activated while it's held.
-3. Hold Shift, then tap the layer key to toggle/lock the layer.
-4. Hold the layer key, then while holding, tap the CU_LLOCK key to lock the layer on. Then you can release the layer key.
-5. If the layer is toggled/locked, press the layer key to deactivate it.
-6. Press the CU_BASE key to deactivate all layers.
+With my Kyria firmware, enabling layer-tap-toggle adds about 500 bytes to the firmware size. However, since I implemented layer-tap-toggle, I have been able to disable all QMK tapping features, which saved almost 2 kbytes.
 
