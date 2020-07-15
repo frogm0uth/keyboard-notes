@@ -201,7 +201,7 @@ void keyboard_post_init_user(void) {
   user_config.raw = eeconfig_read_user();
 
   // Set OS
-#if defined OS_SHORTCUTS && !defined(OS_SHORTCUTS_STATIC)
+#if defined(OS_SHORTCUTS) && !defined(OS_SHORTCUTS_STATIC)
   os_set_raw(user_config.os_selection);
 #endif
 }
