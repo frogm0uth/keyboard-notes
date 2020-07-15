@@ -2,6 +2,7 @@
 
 OS Shortcuts is a utility to ease implementing platform-dependent shortcuts in a keymap. It provides a set of shortcuts specific to each supported platform (currently, macOS and Windows).
 <!--ts-->
+
    * [OS Shortcuts - QMK notes](#os-shortcuts---qmk-notes)
       * [Rationale](#rationale)
       * [LIMITATIONS](#limitations)
@@ -85,7 +86,7 @@ If you want to be able to change the OS selection dynamically i.e. at runtime:
 6. Add the following to your `custom_keycode` enum:
 
    ```c
-   #if defined OS_SHORTCUTS && !defined(OS_SHORTCUTS_STATIC)
+   #if defined(OS_SHORTCUTS) && !defined(OS_SHORTCUTS_STATIC)
      OS_SELECT_KEYCODES,
      OS_SHORTCUT_KEYCODES,
    #endif
@@ -103,7 +104,7 @@ If you want to be able to change the OS selection dynamically i.e. at runtime:
 
    ```c
        // Default processing for OS shortcuts
-   #if defined OS_SHORTCUTS && !defined(OS_SHORTCUTS_STATIC)
+   #if defined(OS_SHORTCUTS) && !defined(OS_SHORTCUTS_STATIC)
      process_record_shortcut(keycode, record);
    #endif
    ```
@@ -123,9 +124,9 @@ Use the macro SC() to access shortcuts. The argument to SC must be listed in the
 and:
 
 ```c
-  register_code16(SC(SC_START_OF_DOC));   // Delete word left, auto-repeat while held
+  register_code16(SC(SC_DEL_WORD_LEFT));   // Delete word left, auto-repeat while held
   ...
-  unregister_code16(SC(SC_START_OF_DOC)); // Stop auto-repeat on word delete
+  unregister_code16(SC(SC_DEL_WORD_LEFT)); // Stop auto-repeat on word delete
 ```
 
 Note that the argument to SC **must** be a constant defined in shortcuts.h. You can not use a variable as its argument. So this (for example) doesn't work:
@@ -141,10 +142,10 @@ switch (keycode) {
 
 If you followed the instructions above for static shortcuts, the keycodes `SC_...` will not be in your keymap. This is because there is no way with static shortcuts to automatically handle those keycodes. I'm assuming in that case you will define the  keycodes manually, as you have to manually write the case for each of them in process_record_user() anyway.
 
-If you do want all the keycodes defined, then just add this to  your `custom_keycode` enum:
+If you do want all the keycodes defined, add this to  your `custom_keycode` enum:
 
 ```c
-   #if defined OS_SHORTCUTS && !defined(OS_SHORTCUTS_STATIC)
+   #if defined(OS_SHORTCUTS)
      OS_SHORTCUT_KEYCODES,
    #endif
 ```
@@ -167,7 +168,7 @@ You can change the OS selection if you are using dynamic shortcuts:
 3. Add code to handle them in process_record_user():
 
    ```
-   #if defined OS_SHORTCUTS && !defined(OS_SHORTCUTS_STATIC)
+   #if defined(OS_SHORTCUTS) && !defined(OS_SHORTCUTS_STATIC)
      case CU_SELECT_MACOS:
      case CU_SELECT_WINDOWS:
        if (record->event.pressed) {
@@ -211,7 +212,7 @@ void keyboard_post_init_user(void) {
 Change the code in process_record_user() to update the EEPROM when the OS selection is changed:
 
 ```c
-#if defined OS_SHORTCUTS && !defined(OS_SHORTCUTS_STATIC)
+#if defined(OS_SHORTCUTS) && !defined(OS_SHORTCUTS_STATIC)
   case CU_SELECT_MACOS:
   case CU_SELECT_WINDOWS:
     if (record->event.pressed) {
