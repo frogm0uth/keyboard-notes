@@ -15,19 +15,17 @@ A [Compose key](https://en.wikipedia.org/wiki/Compose_key) prefixes a sequence o
 
 <!--te-->
 
-## Rationale
+## Description
 
-The QMK Leader key requires that you type quickly after pressing it, otherwise it times out and you have to start again. Also, each leader entry takes quite a lot of space (about 70 bytes), which can be an issue if you have a long list of items and are short on flash space. Finally, Leader must be its own key, you can't combine it with e.g. Mod-Tap.
+The Compose key initiates a keyboard mode in which no characters are output until one of a set of specified character sequences is typed. It is like the QMK Leader key, but different in these ways:
 
-I wanted to see if I could address these. I also wanted to be able to display information on the current sequence on the OLED.
+1. There is no timeout. The Compose key sequence keeps waiting for you until you complete the sequence. Or, you can cancel it by pressing the Compose key again.
+2. The sequence completes as soon as a match is found. You can't have both EG and EGG sequences (for example).
+3. The sequence is defined as a tree. This tends to work better if you have a shallow, wide tree, whereas Leader tends to encourage completely arbitrary sequences. For example, with the Compose key I have sequences pc, pr, pt, pD, pd, pf. (The first character means "print" and the second indicates the specific symbol: copyright, registered, trademark, double dagger, dagger, and degrees.) With Leader, I have cp, reg, tm, ddag, dag, and deg. (I suspect that the Compose key method works better for a large number of sequences as it effectively groups them into categories.)
+
+Compose key is more efficient in terms of Firmware space if you have more than a few sequences. See the Firmeware size section below.
 
 ***This is a very preliminary implementation.***
-
-## Differences to Leader
-
-1. There is no timeout. You can cancel the sequence by pressing the Compose key again.
-2. The output code is emitted as soon as the sequence matches. Therefore, you can't have both EG and EGG input sequences (for example).
-3. You need to define the sequence as a tree. See compose_tree.c for an example. 
 
 ## LIMITATIONS/TODO
 
