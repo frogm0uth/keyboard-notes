@@ -2,14 +2,11 @@
 
 A [Compose key](https://en.wikipedia.org/wiki/Compose_key) prefixes a sequence of keys that produce something completely different. This is my implemention on QMK. It's a "dead" key like the QMK Leader, but different in ways listed below.
 <!--ts-->
-
    * [Compose key - QMK notes](#compose-key---qmk-notes)
-      * [Rationale](#rationale)
-      * [Differences to Leader](#differences-to-leader)
+      * [Description](#description)
       * [LIMITATIONS/TODO](#limitationstodo)
    * [Usage](#usage)
       * [How to add Compose Key to your keymap](#how-to-add-compose-key-to-your-keymap)
-      * [How to add shortcuts to custom code](#how-to-add-shortcuts-to-custom-code)
       * [OLED Support](#oled-support)
    * [Firmware size](#firmware-size)
 
