@@ -2,21 +2,18 @@
 
 OS Shortcuts is a utility to ease implementing platform-dependent shortcuts in a keymap. It provides a set of shortcuts specific to each supported platform (currently, macOS and Windows).
 <!--ts-->
-
-   * [OS Shortcuts - QMK notes](#os-shortcuts---qmk-notes)
+   * [Compose key - QMK notes](#compose-key---qmk-notes)
       * [Rationale](#rationale)
-      * [LIMITATIONS](#limitations)
+      * [Differences to Leader](#differences-to-leader)
+      * [LIMITATIONS/TODO](#limitationstodo)
    * [Usage](#usage)
-      * [How to add OS Shortcuts to your keymap](#how-to-add-os-shortcuts-to-your-keymap)
-         * [For static shortcuts](#for-static-shortcuts)
-         * [For dynamic/runtime shortcuts](#for-dynamicruntime-shortcuts)
+      * [How to add Compose Key to your keymap](#how-to-add-compose-key-to-your-keymap)
       * [How to add shortcuts to custom code](#how-to-add-shortcuts-to-custom-code)
-      * [How to change the OS selection](#how-to-change-the-os-selection)
-      * [How to make OS selection persistent](#how-to-make-os-selection-persistent)
       * [OLED Support](#oled-support)
    * [Firmware size](#firmware-size)
 
 <!--te-->
+
 ## Rationale
 
 The QMK Leader key requires that you type quickly after pressing it, otherwise it times out and you have to start again. Also, each leader entry takes quite a lot of space (about 70 bytes), which can be an issue if you have a long list of items and are short on flash space. Finally, Leader must be its own key, you can't combine it with e.g. Mod-Tap.
@@ -93,43 +90,18 @@ To add OS Shortcuts to your keymap:
 
 10. Add the following inside the main switch in process_record_user():
 
-   ```c
+    ```c
        // Toggle compose mode on or off
-   #ifdef COMPOSE_KEY
+     #ifdef COMPOSE_KEY
      case CU_COMPOSE:
        process_record_compose(keycode, record);
        break;
-   #endif
-   ```
+     #endif
+    ```
 
-   This turns the compose capture on and off.
+    This turns the compose capture on and off.
 
-11. Edit compose_tree.c to suit yourself. My version should demonstrate how to use the macros to write the tree. For output of than a single keycode, use the callback. **Make sure** that each node of the tree ends in COMPOSE_END.
-
-## How to add shortcuts to custom code
-
-Use the macro SC() to access shortcuts. The argument to SC must be listed in the OS_SHORTCUT_KEYCODES macro in shortcuts.h. For example, the following work for both static and dynamic shortcuts:
-
-```c
-  tap_code16(SC(SC_START_OF_DOC)); // Move to start of document
-```
-
-and:
-
-```c
-  register_code16(SC(SC_DEL_WORD_LEFT));   // Delete word left, auto-repeat while held
-  ...
-  unregister_code16(SC(SC_DEL_WORD_LEFT)); // Stop auto-repeat on word delete
-```
-
-Note that the argument to SC **must** be a constant defined in shortcuts.h. You can not use a variable as its argument. So this (for example) doesn't work:
-
-```c
-switch (keycode) {
-  case SC_START_OF_DOC:
-    tap_code16(SC(keycode);
-    break;
-```
+9. Edit compose_tree.c to suit yourself. My version should demonstrate how to use the macros to write the tree. For output of than a single keycode, use the callback. **Make sure** that each node of the tree ends in COMPOSE_END.
 
 ## OLED Support
 
@@ -149,7 +121,7 @@ In addition, add this to config.h:
 #define COMPOSE_STATUS_ENABLE
 ```
 
+
 # Firmware size
 
 With about 20 sequences in a tree of 5 nodes, Compose Key uses 370 bytes without OLED support. With OLED enabled, it uses an additional 300 bytes. If you use SEND_STRING() in your compose callbacks, that will add at least 500 bytes. In comparison, Leader with 12 sequences (and no SEND_STRING) uses 1080 bytes. With more sequences, the difference will be higher.
-
