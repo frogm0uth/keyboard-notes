@@ -21,6 +21,7 @@ The Compose key initiates a keyboard mode in which no characters are output unti
 3. There is no lag. That is, the key is output immediately the match is found. (While in practice this makes no real difference, the lag does prevent you from setting up Leader with a long delay to compensate for item 1.)
 4. The sequence completes as soon as a match is found. You can't have both EG and EGG sequences, for example.
 5. The sequence is defined as a tree. This is easier to define if you have a shallow, wide tree, whereas Leader tends to encourage completely arbitrary sequences. For example, with the Compose key I have sequences pc, pr, pt, pD, pd, pf. (The first character means "print" and the second indicates the specific symbol: copyright, registered, trademark, double dagger, dagger, and degrees.) With Leader, I have cp, reg, tm, ddag, dag, and deg.
+
    (Either set could be used with either method, this is just how I've ended up doing it in each case. I suspect that the Compose key method works better for a large number of sequences as it naturally groups them into categories.)
 
 The Compose key is more efficient than Leader in terms of Firmware space, especially if you have more than a few sequences. See the Firmware Size section below.
@@ -99,7 +100,7 @@ To add a Compose key to your keymap:
 
     This turns the compose capture on and off.
 
-9. Edit compose_tree.c to suit yourself. Hopefully my version is enough to demonstrate how to use the macros that define the tree. Note 1: to output more than a single keycode, use the callback. Note 2: Make sure** that each node of the tree ends in COMPOSE_END.
+9. Edit compose_tree.c to suit yourself. Hopefully my version is enough to demonstrate how to use the macros that define the tree. Note 1: to output more than a single keycode, use the callback. Note 2: Make **sure** that each node of the tree ends in COMPOSE_END.
 
 ## OLED Support
 
