@@ -17,14 +17,15 @@ A [Compose key](https://en.wikipedia.org/wiki/Compose_key) prefixes a sequence o
 The Compose key initiates a keyboard mode in which no characters are output until one of a set of specified character sequences is typed. It is like the QMK Leader key, but different in these ways:
 
 1. There is no timeout. The Compose key sequence keeps waiting for you until you complete the sequence. Or, you can cancel by pressing the Compose key again.
-2. The keys in the sequence can be in any layer. So you can use punctuation keys in a different layer as part of a sequence.
+2. The keys in the sequence can be in any layer. So you can use e.g. punctuation keys in different layers as part of the sequence.
 3. There is no lag. That is, the key is output immediately the match is found. (While in practice this makes no real difference, the lag does prevent you from setting up Leader with a long delay to compensate for item 1.)
 4. The sequence completes as soon as a match is found. You can't have both EG and EGG sequences, for example.
-5. The sequence is defined as a tree. This tends to work better if you have a shallow, wide tree, whereas Leader tends to encourage completely arbitrary sequences. For example, with the Compose key I have sequences pc, pr, pt, pD, pd, pf. (The first character means "print" and the second indicates the specific symbol: copyright, registered, trademark, double dagger, dagger, and degrees.) With Leader, I have cp, reg, tm, ddag, dag, and deg. I suspect that the Compose key method works better for a large number of sequences as it naturally groups them into categories.
+5. The sequence is defined as a tree. This is easier to define if you have a shallow, wide tree, whereas Leader tends to encourage completely arbitrary sequences. For example, with the Compose key I have sequences pc, pr, pt, pD, pd, pf. (The first character means "print" and the second indicates the specific symbol: copyright, registered, trademark, double dagger, dagger, and degrees.) With Leader, I have cp, reg, tm, ddag, dag, and deg.
+   (Either set could be used with either method, this is just how I've ended up doing it in each case. I suspect that the Compose key method works better for a large number of sequences as it naturally groups them into categories.)
 
 The Compose key is more efficient than Leader in terms of Firmware space, especially if you have more than a few sequences. See the Firmware Size section below.
 
-Finally, the OLED displays the sequence so far and the candidate next characters. (I'm not sure how useful this is yet, but it's there...) 
+Finally, the OLED displays the sequence so far and the candidate next characters.
 
 ***This is a very preliminary implementation.***
 
@@ -32,7 +33,7 @@ Finally, the OLED displays the sequence so far and the candidate next characters
 
 1. The output codes used in compose_tree.c are for Mac. It should be updated to use [OS Shortcuts](../../../../keyboard-notes/tree/master/qmk-os-shortcuts).
 2. In theory, it will work well for diacritics, but a working example should be added.
-3. I would like to come up with a "mod-tap" key that works with Compose. (Leader needs its own key, which is part of the reason I wrote my own Compose.)
+3. I would like to come up with a "mod-tap" key that works with Compose. (Leader needs its own key, which is part of the reason I wrote this.)
 5. (Maybe) Write a script to convert a human-readable set of strings into a compose tree.
 
 # Usage
@@ -41,7 +42,7 @@ Finally, the OLED displays the sequence so far and the candidate next characters
 
 Note: the following assumes that you have a keymap.h file which is included by keymap.c and contains the definition of the `custom_keycodes`  enum.
 
-To add Compose Key to your keymap:
+To add a Compose key to your keymap:
 
 1. Drop the files compose_key.c, compose_key.h and compose_tree.c into your keymap folder. These can be obtained from my [Kyria keymap](../../../../keyboard-firmware/tree/master/kyria-rsthd-prime).
 
@@ -98,7 +99,7 @@ To add Compose Key to your keymap:
 
     This turns the compose capture on and off.
 
-9. Edit compose_tree.c to suit yourself. My version should demonstrate how to use the macros to write the tree. To output of more than a single keycode, use the callback. **Make sure** that each node of the tree ends in COMPOSE_END.
+9. Edit compose_tree.c to suit yourself. Hopefully my version is enough to demonstrate how to use the macros that define the tree. Note 1: to output more than a single keycode, use the callback. Note 2: Make sure** that each node of the tree ends in COMPOSE_END.
 
 ## OLED Support
 
@@ -108,7 +109,7 @@ If you have an OLED, add this to config.h:
 #define COMPOSE_STATUS_ENABLE
 ```
 
-Add something like this to your `oled_task_user` function: 
+Add this to your `oled_task_user` function: 
 
 ```c
 ...
@@ -120,7 +121,7 @@ Add something like this to your `oled_task_user` function:
 
 Finally, add this to your `matrix_scan_user` function:
 
-```
+```c
  // Compose key status timer
 #ifdef COMPOSE_STATUS_ENABLE
   compose_status_tick();
@@ -130,7 +131,7 @@ Finally, add this to your `matrix_scan_user` function:
 
 # Firmware size
 
-With about 20 sequences in a tree of 5 nodes, Compose Key uses 370 bytes without OLED support. With OLED support enabled, it uses an additional 470 bytes. In comparison, Leader with 12 sequences (and no SEND_STRING) uses 1080 bytes. With more sequences, the difference will be higher.
+With about 20 sequences in a tree of 5 nodes, Compose Key uses 370 bytes without OLED support. With OLED support enabled, it uses an additional 470 bytes. In comparison, Leader with 12 sequences uses 1080 bytes. With more sequences, the difference will be higher.
 
 If you use SEND_STRING() in your Compose callbacks or Leader code, that will add about 500 bytes in either case.
 
