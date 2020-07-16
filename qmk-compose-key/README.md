@@ -25,26 +25,26 @@ I wanted to see if I could address these. I also wanted to be able to display in
 ## Differences to Leader
 
 1. There is no timeout. You can cancel the sequence by pressing the Compose key again.
-2. The output code is emitted as soon as the sequence matches. Therefore, you can't have both sequences EG and EGG input sequences (for example).
+2. The output code is emitted as soon as the sequence matches. Therefore, you can't have both EG and EGG input sequences (for example).
 3. You need to define the sequence as a tree. See compose_tree.c for an example. 
 
 ## LIMITATIONS/TODO
 
-1. The output codes used in from the default codes are Mac (only). Needs to use [OS Shortcuts](../../../../keyboard-notes/tree/master/qmk-os-shortcuts).
-2. Add an example for generating diacritics.
-3. Want to generate a "mod-tap" key that works with Compose.
-4. Have the OLED display candidate characters at each step in the sequence.
+1. The output codes used in compose_tree.c are Mac (only). It needs to be updated to use [OS Shortcuts](../../../../keyboard-notes/tree/master/qmk-os-shortcuts).
+2. In theory, it will work well for diacritics, but a working example should be added.
+3. I am yet to generate a "mod-tap" key that works with Compose.
+4. It would be helpful if the OLED displayed candidate characters at each step in the sequence.
 5. (Maybe) Write a script to convert a human-readable set of strings into a compose tree.
 
 # Usage
 
 ## How to add Compose Key to your keymap
 
-Note: the following assumes that you have a keymap.h file which is included by keymap.c and contains the definition of the `custom_keycodes` enum. The code can be obtained from my [Kyria keymap](../../../../keyboard-firmware/tree/master/kyria-rsthd-prime).
+Note: the following assumes that you have a keymap.h file which is included by keymap.c and contains the definition of the `custom_keycodes`  enum.
 
 To add OS Shortcuts to your keymap:
 
-1. Drop the files compose_key.c, compose_key.h and compose_tree.c into your keymap folder.
+1. Drop the files compose_key.c, compose_key.h and compose_tree.c into your keymap folder. These can be obtained from my [Kyria keymap](../../../../keyboard-firmware/tree/master/kyria-rsthd-prime).
 
 2. Include compose_key.h in your keymap.h:
 
@@ -72,8 +72,6 @@ To add OS Shortcuts to your keymap:
    ```
    
 5. Add the above key to your keymap.
-
-6. Add the shortcut codes, or your #defined equivalents, to the keymap.
 
 9. Add the following **before** the main switch in process_record_user():
 
