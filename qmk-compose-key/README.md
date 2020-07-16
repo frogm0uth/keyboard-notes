@@ -1,7 +1,8 @@
 # Compose key - QMK notes
 
-OS Shortcuts is a utility to ease implementing platform-dependent shortcuts in a keymap. It provides a set of shortcuts specific to each supported platform (currently, macOS and Windows).
+A [Compose key](https://en.wikipedia.org/wiki/Compose_key) prefixes a sequence of keys that produce something completely different. This is my implemention on QMK. It's a "dead" key like the QMK Leader, but different in ways listed below.
 <!--ts-->
+
    * [Compose key - QMK notes](#compose-key---qmk-notes)
       * [Rationale](#rationale)
       * [Differences to Leader](#differences-to-leader)
@@ -42,7 +43,7 @@ I wanted to see if I could address these. I also wanted to be able to display in
 
 Note: the following assumes that you have a keymap.h file which is included by keymap.c and contains the definition of the `custom_keycodes`  enum.
 
-To add OS Shortcuts to your keymap:
+To add Compose Key to your keymap:
 
 1. Drop the files compose_key.c, compose_key.h and compose_tree.c into your keymap folder. These can be obtained from my [Kyria keymap](../../../../keyboard-firmware/tree/master/kyria-rsthd-prime).
 
@@ -99,7 +100,7 @@ To add OS Shortcuts to your keymap:
 
     This turns the compose capture on and off.
 
-9. Edit compose_tree.c to suit yourself. My version should demonstrate how to use the macros to write the tree. For output of than a single keycode, use the callback. **Make sure** that each node of the tree ends in COMPOSE_END.
+9. Edit compose_tree.c to suit yourself. My version should demonstrate how to use the macros to write the tree. To output of more than a single keycode, use the callback. **Make sure** that each node of the tree ends in COMPOSE_END.
 
 ## OLED Support
 
