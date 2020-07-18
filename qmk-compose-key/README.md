@@ -38,8 +38,9 @@ The current implementation works for Mac only. The first three item in this last
 1. The output codes used in compose_tree.c are for Mac only.
 2. It doesn't work with Windows Alt key input method.
 3. Needs more work to make diacritics work better (Mac) or possible at all (Windows, this would require addressing the previous item + more).
-4. I would like to come up with a "mod-tap" key that works with Compose. (Leader needs its own key, which is part of the reason I wrote this in the first place.)
-5. (Maybe) Write a script to convert a human-readable set of strings into a compose tree.
+4. It doesn't work with custom keycodes.
+5. I would like to come up with a "mod-tap" key that works with Compose. (Leader needs its own key, which is part of the reason I wrote this in the first place.)
+6. (Maybe) Write a script to convert a human-readable set of strings into a compose tree.
 
 # Usage
 
