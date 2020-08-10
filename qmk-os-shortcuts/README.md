@@ -100,12 +100,13 @@ If you want to be able to change the OS selection dynamically i.e. at runtime:
 
 6. Add the shortcut codes, or your #defined equivalents, to the keymap.
 
-8. Add the following **after** the main switch in process_record_user():
+9. Add the following **at the end** of the main switch in process_record_user():
 
    ```c
-       // Default processing for OS shortcuts
    #if defined(OS_SHORTCUTS) && !defined(OS_SHORTCUTS_STATIC)
-     process_record_shortcut(keycode, record);
+           default:
+               process_record_shortcut(keycode, record);
+               break;
    #endif
    ```
 

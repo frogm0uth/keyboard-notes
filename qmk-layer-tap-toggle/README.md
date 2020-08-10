@@ -16,7 +16,7 @@ Layer-tap-toggle is my way of getting a uniform layer switching method on my QMK
 
 QMK provides a range of keycodes for layer switching - MO, TG, TT, LT, and OSL. However, I found that I ended up with a mish-mash using more than one of these, which then confused me. I felt that what I really wanted was a single hybrid of LT and TG.
 
-Therefore, the layer-tap-toggle code here firstly allows you to hold to activate a layer or tap to get a keycode – it is like LT except that the layer activates immediately with no lag. In addition, you can toggle the layer on by holding Shift when activating it, or lock it later with a dedicated "lock" key.
+Therefore, the layer-tap-toggle code here firstly allows you to hold to activate a layer or tap to get a keycode – it is like LT except that the layer activates immediately with no lag. In addition, you can toggle the layer on by holding Cmd/Gui when activating it, or lock it later with a dedicated "lock" key. Finally, you can use the same key to activate a different layer, by having Ctrl held when pressing it.
 
 As a side-benefit, the tap keycode can be any keycode, it's not limited to just basic keycodes.
 
@@ -28,10 +28,11 @@ Once you have everything set up:
 
 1. Tap the key to produce the tap keycode. In the example above, tapping the NumPad layer key produces Enter.
 2. Hold the layer key and the layer will be activated while it's held.
-3. Hold Shift, then tap the layer key to toggle/lock the layer.
-4. Hold the layer key, then while holding, tap the CU_LLOCK key to lock the layer on. Then you can release the layer key.
-5. If the layer is toggled/locked, press the layer key to deactivate it.
-6. Press the CU_BASE key to deactivate all layers.
+3. Hold Ctrl, then hold the layer key and a second different layer will be activated while it's held.
+4. Hold Cmd/Gui, then tap the layer key to toggle/lock the layer.
+5. Hold the layer key, then while holding, tap a "lock" key defined in that layer to lock the layer on. Then you can release the layer key.
+6. If the layer is toggled/locked, press the layer key to deactivate it.
+7. Press the CU_BASE key to deactivate all layers.
 
 ## How to add to your keymap
 
@@ -68,7 +69,7 @@ To add layer-tap-toggle to your keymap:
    endif
    ```
 
-5. Add layer keys to your `custom_keycode` enum. In this example, CU_BASE will switch back to the base layer, CU_LLOCK is the layer lock key, and CU_NUMPAD and CU_MOUSE switch to the NUMPAD and MOUSE layers:
+5. Add layer keys to your `custom_keycode` enum. In this example, CU_BASE will switch back to the base layer, CU_LLOCK is the layer lock key (if you want one), and CU_NUMPAD and CU_MOUSE switch to the NUMPAD and MOUSE layers:
 
    ```c
    enum custom_keycodes {
@@ -109,7 +110,15 @@ To add layer-tap-toggle to your keymap:
    #endif
    ```
 
-8. Add this call to your matrix_scan_user() function:
+8. If you want to activate an alternate layer with Ctrl, call layer_tap_toggle2() instead:
+
+   ```c
+    case CU_NUMPAD:
+       return layer_tap_toggle2(KC_ENTER, NUMPAD, MOUSE, record);
+       break;
+   ```
+   
+9. Add this call to your matrix_scan_user() function:
 
    ```c
    #ifdef LAYER_TAP_TOGGLE

@@ -35,7 +35,7 @@ Finally, a dedicated modifier key changes from mouse movement to wheel scrolling
 
 ## Typical layout
 
-As an example of how this is used, this is the **Cursor** layer of my Kyria firmware:
+Here is an example of how this could be used:
 
 ![kyria-custom-mouse-layer-left-handed](kyria-custom-mouse-layer-left-handed.png)
 
