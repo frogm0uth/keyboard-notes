@@ -34,7 +34,7 @@ Therefore, the Custom Edit feature defines a set of platform-independent editing
 
 ## Typical layout
 
-As an example of how this is used, this is the **Edit** layer of my Kyria firmware:
+Here is an example of how this could be used:
 
 ![kyria-custom-edit-layer-right-handed](kyria-custom-edit-layer-right-handed.png)
 
