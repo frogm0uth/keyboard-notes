@@ -114,7 +114,7 @@ To add a Compose key to your keymap:
 
     This turns the compose capture on and off.
 
-9. Edit compose_tree.c to suit yourself. Hopefully my version is enough to demonstrate how to use the macros that define the tree. Note 1: to output more than a single keycode, use the callback. Note 2: Make **sure** that each node of the tree ends in COMPOSE_END.
+9. Edit compose_tree.c to suit yourself. Hopefully my version is enough to demonstrate how to use the macros that define the tree. N.B. make **sure** that each node of the tree ends in COMPOSE_END.
 
 ## OLED Support
 
