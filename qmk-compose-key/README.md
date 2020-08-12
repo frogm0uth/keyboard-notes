@@ -1,6 +1,6 @@
 # Compose key - QMK notes
 
-A [Compose key](https://en.wikipedia.org/wiki/Compose_key) prefixes a sequence of keys that produce something completely different. This is a **preliminary** implemention on QMK.
+A [Compose key](https://en.wikipedia.org/wiki/Compose_key) prefixes a sequence of keys that produce something completely different. This is a **preliminary** implementation on QMK.
 <!--ts-->
 
    * [Compose key - QMK notes](#compose-key---qmk-notes)
@@ -25,7 +25,14 @@ The Compose key initiates a keyboard mode in which no characters are output unti
 
    While either set of sequences could be used with either method, this is just how I've ended up doing it in each case. I suspect that the Compose key method works better for a large number of sequences as it naturally groups them into categories.
 
-The Compose key is more efficient than Leader in terms of Firmware space, especially if you have more than a few sequences. See the Firmware Size section below.
+There are several ways of specifying the output produced when a sequence matches:
+
+* Output a single keycode.
+* Output an array of keycodes.
+* Output a literal string ("This is a string").
+* Execute a callback to output whatever you want.
+
+The Compose key is more efficient than Leader in terms of firmware space if you have a lot of sequences. See the Firmware Size section below.
 
 Finally, the OLED displays the sequence so far and the candidate next characters.
 
@@ -33,12 +40,14 @@ Finally, the OLED displays the sequence so far and the candidate next characters
 
 ## LIMITATIONS/TODO
 
-The current implementation works for Mac only. The first three item in this last of limitations are all tied together, and are a bit tricky to solve. It may be a while before I get to it. 
+The output codes in my Kyria implementation currently work for Mac only. If you use this code, presumably you will redefine the compose tree anyway.
 
-1. The output codes used in compose_tree.c are for Mac only.
-2. It doesn't work with Windows Alt key input method.
-3. Needs more work to make diacritics work better (Mac) or possible at all (Windows, this would require addressing the previous item + more).
-4. It doesn't work with custom keycodes.
+The first three items in the following list of limitations are all tied together, and are a bit tricky to solve. It may be a while before I get to it. 
+
+1. It doesn't work with custom keycodes.
+2. The output codes used in compose_tree.c are for Mac only.
+3. It doesn't work with Windows Alt key input method (because Alt needs to be held down while the following numbers are tapped).
+4. Needs more work to make diacritics work better (Mac) or possible at all (Windows, this would require addressing the previous item + more).
 5. I would like to come up with a "mod-tap" key that works with Compose. (Leader needs its own key, which is part of the reason I wrote this in the first place.)
 6. (Maybe) Write a script to convert a human-readable set of strings into a compose tree.
 
@@ -137,7 +146,7 @@ Finally, add this to your `matrix_scan_user` function:
 
 # Firmware size
 
-With about 20 sequences in a tree of 5 nodes, Compose Key uses 370 bytes without OLED support. With OLED support enabled, it uses an additional 470 bytes. In comparison, Leader with 12 sequences uses 1080 bytes. With more sequences, the difference will be higher.
+With 22 sequences in a two-level tree, without OLED support enabled, and no callback nodes, Compose Key uses about 850 bytes. With OLED support turned on, it uses about 1250 bytes. Callbacks will use more space of course depending on how complex they are.
 
-If you use SEND_STRING() in your Compose callbacks or Leader code, that will add about 500 bytes in either case.
+In comparison, Leader with 22 sequences uses 1800 bytes. A lot of the size usage is from the individual sequences, as Leader uses about 60 bytes per sequence. With only a few sequences, Leader will use less space. Compose Key uses only a few bytes for each node (with the exception of callback nodes), so is much more space-efficient with a large number of sequences.
 
